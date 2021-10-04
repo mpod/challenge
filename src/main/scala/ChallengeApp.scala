@@ -11,6 +11,7 @@ import java.io.{File, FileWriter, PrintWriter}
 
 object ChallengeApp extends App {
 
+  // Helper function for writing to the file
   private def write(fileName: String)(f: PrintWriter => Unit): Unit = {
     val file = new File(fileName)
     val pw = new PrintWriter(new FileWriter(file))
@@ -89,10 +90,12 @@ object ChallengeApp extends App {
     .add(StructField("feature3", DoubleType, nullable = true))
     .add(StructField("feature4", DoubleType, nullable = true))
     .add(StructField("label", DoubleType, nullable = true))
+  // Create dataframe from data and schema
   val df3 = spark.createDataFrame(rdd3, schema)
   val assembler = new VectorAssembler()
     .setInputCols(Array("feature1", "feature2", "feature3", "feature4"))
     .setOutputCol("features")
+  // Transform dataframe to the shape suitable for Logistic Regression
   val df3a = assembler.transform(df3)
   val lr = new LogisticRegression().setFeaturesCol("features")
   val model3 = lr.fit(df3a)
